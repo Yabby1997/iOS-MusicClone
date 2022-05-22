@@ -43,15 +43,28 @@ class MusicPlayerViewController: UIViewController {
             static let sliderTintColor: UIColor = .white.withAlphaComponent(0.7)
             static let textColor: UIColor = .white.withAlphaComponent(0.5)
             static let font: UIFont = .systemFont(ofSize: 12, weight: .bold)
+            static let top: CGFloat = 22
+            static let leading: CGFloat = 32
+            static let trailing: CGFloat = -32
         }
         
         enum MediaControl {
             static let buttonImageInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
             static let buttonColor: UIColor = .white
+            static let top: CGFloat = 48
+            static let leading: CGFloat = 48
+            static let trailing: CGFloat = -48
+            static let height: CGFloat = 50
+            static let buttonWidth: CGFloat = 50
         }
         
         enum SoundControl {
             static let tintColor: UIColor = .white.withAlphaComponent(0.7)
+            static let top: CGFloat = 48
+            static let leading: CGFloat = 32
+            static let trailing: CGFloat = -32
+            static let imageWidth: CGFloat = 12
+            static let spacing: CGFloat = 12
         }
     }
     
@@ -154,7 +167,7 @@ class MusicPlayerViewController: UIViewController {
     private let soundStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.spacing = 12
+        stackView.spacing = Design.SoundControl.spacing
         return stackView
     }()
 
@@ -163,6 +176,7 @@ class MusicPlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
+        setupActions()
     }
 
     // MARK: - Setups
@@ -194,51 +208,81 @@ class MusicPlayerViewController: UIViewController {
         
         view.addSubview(mediaSeekBar)
         mediaSeekBar.snp.makeConstraints { make in
-            make.top.equalTo(artistLabel.snp.bottom).offset(22)
-            make.leading.equalToSuperview().offset(32)
-            make.trailing.equalToSuperview().offset(-32)
+            make.top.equalTo(artistLabel.snp.bottom).offset(Design.MediaSeekBar.top)
+            make.leading.equalToSuperview().offset(Design.MediaSeekBar.leading)
+            make.trailing.equalToSuperview().offset(Design.MediaSeekBar.trailing)
         }
         
         view.addSubview(mediaControlStackView)
         mediaControlStackView.snp.makeConstraints { make in
-            make.top.equalTo(mediaSeekBar.snp.bottom).offset(48)
-            make.leading.equalToSuperview().offset(48)
-            make.trailing.equalToSuperview().offset(-48)
-            make.height.equalTo(50)
+            make.top.equalTo(mediaSeekBar.snp.bottom).offset(Design.MediaControl.top)
+            make.leading.equalToSuperview().offset(Design.MediaControl.leading)
+            make.trailing.equalToSuperview().offset(Design.MediaControl.trailing)
+            make.height.equalTo(Design.MediaControl.height)
         }
         
         mediaControlStackView.addArrangedSubview(rewindButton)
         rewindButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
+            make.width.equalTo(Design.MediaControl.buttonWidth)
         }
         
         mediaControlStackView.addArrangedSubview(playPauseButton)
         playPauseButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
+            make.width.equalTo(Design.MediaControl.buttonWidth)
         }
         
         mediaControlStackView.addArrangedSubview(forwardButton)
         forwardButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
+            make.width.equalTo(Design.MediaControl.buttonWidth)
         }
         
         view.addSubview(soundStackView)
         soundStackView.snp.makeConstraints { make in
-            make.top.equalTo(mediaControlStackView.snp.bottom).offset(48)
-            make.leading.equalToSuperview().offset(32)
-            make.trailing.equalToSuperview().offset(-32)
+            make.top.equalTo(mediaControlStackView.snp.bottom).offset(Design.SoundControl.top)
+            make.leading.equalToSuperview().offset(Design.SoundControl.leading)
+            make.trailing.equalToSuperview().offset(Design.SoundControl.trailing)
         }
         
         soundStackView.addArrangedSubview(lowSoundImageView)
         lowSoundImageView.snp.makeConstraints { make in
-            make.width.equalTo(12)
+            make.width.equalTo(Design.SoundControl.imageWidth)
         }
         
         soundStackView.addArrangedSubview(soundLevelSlider)
         
         soundStackView.addArrangedSubview(highSoundImageView)
         highSoundImageView.snp.makeConstraints { make in
-            make.width.equalTo(12)
+            make.width.equalTo(Design.SoundControl.imageWidth)
         }
+    }
+    
+    private func setupActions() {
+        mediaSeekBar.addTarget(self, action: #selector(mediaSeekBarValueChanged), for: .valueChanged)
+        playPauseButton.addTarget(self, action: #selector(playPauseButtonDidTap), for: .touchUpInside)
+        soundLevelSlider.addTarget(self, action: #selector(soundLevelSliderValueChanged), for: .valueChanged)
+        rewindButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(rewindButtoDidLongPressed)))
+        forwardButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(forwardButtonDidLongPressed)))
+    }
+    
+    // MARK: - Actions
+    
+    @objc func mediaSeekBarValueChanged(_ sender: MediaSeekBar) {
+        print(mediaSeekBar.value)
+    }
+    
+    @objc func soundLevelSliderValueChanged(_ sender: UISlider) {
+        print(soundLevelSlider.value)
+    }
+    
+    @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {
+        print(#function)
+    }
+    
+    @objc func forwardButtonDidLongPressed(_ sender: UILongPressGestureRecognizer) {
+        print(#function)
+    }
+    
+    @objc func playPauseButtonDidTap(_ sender: UIButton) {
+        print(#function)
     }
 }

@@ -24,6 +24,7 @@ class MediaSeekBar: UIControl {
         slider.minimumValue = 0
         slider.maximumValue = 100
         slider.value = 50
+        slider.isContinuous = false
         return slider
     }()
     
@@ -44,6 +45,21 @@ class MediaSeekBar: UIControl {
     }()
     
     // MARK: - Properties
+    
+    var maximumValue: Float {
+        get { slider.maximumValue }
+        set { slider.maximumValue = newValue }
+    }
+    
+    var minimumValue: Float {
+        get { slider.minimumValue }
+        set { slider.minimumValue = newValue }
+    }
+    
+    var value: Float {
+        get { slider.value }
+        set { slider.value = newValue }
+    }
     
     var sliderTintColor: UIColor? { didSet { slider.tintColor = sliderTintColor } }
     var thumbColor: UIColor? { didSet { updateThumb() } }
@@ -81,6 +97,7 @@ class MediaSeekBar: UIControl {
         slider.snp.makeConstraints { make in
             make.leading.trailing.top.equalToSuperview()
         }
+        slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         
         addSubview(playedTimeLabel)
         playedTimeLabel.snp.makeConstraints { make in
@@ -117,5 +134,11 @@ class MediaSeekBar: UIControl {
         
         let renderer = UIGraphicsImageRenderer(bounds: thumbView.bounds)
         return renderer.image { thumbView.layer.render(in: $0.cgContext) }
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func sliderValueChanged(_ sender: UISlider) {
+        sendActions(for: .valueChanged)
     }
 }
