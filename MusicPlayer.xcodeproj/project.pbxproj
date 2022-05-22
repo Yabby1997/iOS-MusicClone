@@ -60,16 +60,64 @@
 		1D6FE0E128393D7A0007F99C /* MusicPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				1D6FE0FE283A25BB0007F99C /* Resources */,
+				1D6FE0FD283A25A50007F99C /* App */,
+				1D6FE101283A25DC0007F99C /* Utils */,
+				1D6FE0FF283A25C70007F99C /* ViewControllers */,
+				1D6FE100283A25D00007F99C /* Views */,
+				1D6FE102283A25E70007F99C /* Models */,
+			);
+			path = MusicPlayer;
+			sourceTree = "<group>";
+		};
+		1D6FE0FD283A25A50007F99C /* App */ = {
+			isa = PBXGroup;
+			children = (
 				1D6FE0E228393D7A0007F99C /* AppDelegate.swift */,
 				1D6FE0E428393D7A0007F99C /* SceneDelegate.swift */,
-				1D6FE0E628393D7A0007F99C /* MusicPlayerViewController.swift */,
-				1D6FE0FB283957F80007F99C /* MediaSeekBar.swift */,
-				1D6FE0F9283956A80007F99C /* UIImage+Extensions.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1D6FE0FE283A25BB0007F99C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				1D6FE0EB28393D7C0007F99C /* Assets.xcassets */,
 				1D6FE0ED28393D7C0007F99C /* LaunchScreen.storyboard */,
 				1D6FE0F028393D7C0007F99C /* Info.plist */,
 			);
-			path = MusicPlayer;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1D6FE0FF283A25C70007F99C /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				1D6FE0E628393D7A0007F99C /* MusicPlayerViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		1D6FE100283A25D00007F99C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1D6FE0FB283957F80007F99C /* MediaSeekBar.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1D6FE101283A25DC0007F99C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				1D6FE0F9283956A80007F99C /* UIImage+Extensions.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		1D6FE102283A25E70007F99C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -295,7 +343,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5HZQ3M82FA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicPlayer/Info.plist;
+				INFOPLIST_FILE = MusicPlayer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -323,7 +371,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5HZQ3M82FA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicPlayer/Info.plist;
+				INFOPLIST_FILE = MusicPlayer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
