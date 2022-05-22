@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 import SnapKit
 
@@ -73,6 +74,7 @@ class MusicPlayerViewController: UIViewController {
     private let artworkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .black
+        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Design.ArtworkImageView.cornerRadius
         return imageView
     }()
@@ -146,7 +148,7 @@ class MusicPlayerViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
+
     private let highSoundImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .speakerWave3Fill
@@ -154,22 +156,24 @@ class MusicPlayerViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
-    private let soundLevelSlider: UISlider = {
-        let slider = UISlider()
-        slider.minimumValue = 0
-        slider.maximumValue = 100
-        slider.value = 50
-        slider.tintColor = Design.SoundControl.tintColor
-        return slider
+
+    private let volumeView: MPVolumeView = {
+        let volumeView = MPVolumeView()
+        volumeView.tintColor = Design.SoundControl.tintColor
+        volumeView.showsRouteButton = false
+        return volumeView
     }()
-    
+
     private let soundStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = Design.SoundControl.spacing
         return stackView
     }()
+    
+    // MARK: - Properties
+    
+    let musicPlayer = MusicPlayer()
 
     // MARK: - Lifecycle Callbacks
     
@@ -177,6 +181,7 @@ class MusicPlayerViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupActions()
+        setupModels()
     }
 
     // MARK: - Setups
@@ -235,43 +240,35 @@ class MusicPlayerViewController: UIViewController {
         forwardButton.snp.makeConstraints { make in
             make.width.equalTo(Design.MediaControl.buttonWidth)
         }
-        
+
         view.addSubview(soundStackView)
         soundStackView.snp.makeConstraints { make in
             make.top.equalTo(mediaControlStackView.snp.bottom).offset(Design.SoundControl.top)
             make.leading.equalToSuperview().offset(Design.SoundControl.leading)
             make.trailing.equalToSuperview().offset(Design.SoundControl.trailing)
         }
-        
+
         soundStackView.addArrangedSubview(lowSoundImageView)
-        lowSoundImageView.snp.makeConstraints { make in
-            make.width.equalTo(Design.SoundControl.imageWidth)
-        }
-        
-        soundStackView.addArrangedSubview(soundLevelSlider)
-        
+        soundStackView.addArrangedSubview(volumeView)
         soundStackView.addArrangedSubview(highSoundImageView)
-        highSoundImageView.snp.makeConstraints { make in
-            make.width.equalTo(Design.SoundControl.imageWidth)
-        }
     }
     
     private func setupActions() {
         mediaSeekBar.addTarget(self, action: #selector(mediaSeekBarValueChanged), for: .valueChanged)
         playPauseButton.addTarget(self, action: #selector(playPauseButtonDidTap), for: .touchUpInside)
-        soundLevelSlider.addTarget(self, action: #selector(soundLevelSliderValueChanged), for: .valueChanged)
         rewindButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(rewindButtoDidLongPressed)))
         forwardButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(forwardButtonDidLongPressed)))
+    }
+    
+    private func setupModels() {
+        musicPlayer.delegate = self
     }
     
     // MARK: - Actions
     
     @objc func mediaSeekBarValueChanged(_ sender: MediaSeekBar) {
-        print(mediaSeekBar.value)
-    }
-    
-    @objc func soundLevelSliderValueChanged(_ sender: UISlider) {
-        print(soundLevelSlider.value)
+        let progress = Double(mediaSeekBar.value)
+        musicPlayer.seek(to: progress)
     }
     
     @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {
@@ -284,5 +281,20 @@ class MusicPlayerViewController: UIViewController {
     
     @objc func playPauseButtonDidTap(_ sender: UIButton) {
         print(#function)
+        musicPlayer.playSound()
+    }
+}
+
+extension MusicPlayerViewController: MusicPlayerDelegate {
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtworkImageData imageData: Data) {
+        artworkImageView.image = UIImage(data: imageData)
+    }
+    
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadTitle title: String) {
+        titleLabel.text = title
+    }
+    
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtist artist: String) {
+        artistLabel.text = artist
     }
 }

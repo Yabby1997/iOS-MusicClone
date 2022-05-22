@@ -12,9 +12,11 @@
 		1D6FE0E728393D7A0007F99C /* MusicPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6FE0E628393D7A0007F99C /* MusicPlayerViewController.swift */; };
 		1D6FE0EC28393D7C0007F99C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D6FE0EB28393D7C0007F99C /* Assets.xcassets */; };
 		1D6FE0EF28393D7C0007F99C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D6FE0ED28393D7C0007F99C /* LaunchScreen.storyboard */; };
-		1D6FE0F828393D8A0007F99C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1D6FE0F728393D8A0007F99C /* SnapKit */; };
 		1D6FE0FA283956A80007F99C /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6FE0F9283956A80007F99C /* UIImage+Extensions.swift */; };
 		1D6FE0FC283957F80007F99C /* MediaSeekBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6FE0FB283957F80007F99C /* MediaSeekBar.swift */; };
+		1D6FE104283A265E0007F99C /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6FE103283A265E0007F99C /* MusicPlayer.swift */; };
+		1D6FE106283A28640007F99C /* 피카부.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1D6FE105283A28640007F99C /* 피카부.mp3 */; };
+		CE0C4947283A4354007C05C5 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CE0C4946283A4354007C05C5 /* SnapKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		1D6FE0F028393D7C0007F99C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1D6FE0F9283956A80007F99C /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		1D6FE0FB283957F80007F99C /* MediaSeekBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaSeekBar.swift; sourceTree = "<group>"; };
+		1D6FE103283A265E0007F99C /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
+		1D6FE105283A28640007F99C /* 피카부.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "피카부.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D6FE0F828393D8A0007F99C /* SnapKit in Frameworks */,
+				CE0C4947283A4354007C05C5 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +86,7 @@
 		1D6FE0FE283A25BB0007F99C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1D6FE105283A28640007F99C /* 피카부.mp3 */,
 				1D6FE0EB28393D7C0007F99C /* Assets.xcassets */,
 				1D6FE0ED28393D7C0007F99C /* LaunchScreen.storyboard */,
 				1D6FE0F028393D7C0007F99C /* Info.plist */,
@@ -116,6 +121,7 @@
 		1D6FE102283A25E70007F99C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1D6FE103283A265E0007F99C /* MusicPlayer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -137,7 +143,7 @@
 			);
 			name = MusicPlayer;
 			packageProductDependencies = (
-				1D6FE0F728393D8A0007F99C /* SnapKit */,
+				CE0C4946283A4354007C05C5 /* SnapKit */,
 			);
 			productName = MusicPlayer;
 			productReference = 1D6FE0DF28393D7A0007F99C /* MusicPlayer.app */;
@@ -168,7 +174,7 @@
 			);
 			mainGroup = 1D6FE0D628393D7A0007F99C;
 			packageReferences = (
-				1D6FE0F628393D8A0007F99C /* XCRemoteSwiftPackageReference "SnapKit" */,
+				CE0C4945283A4354007C05C5 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 1D6FE0E028393D7A0007F99C /* Products */;
 			projectDirPath = "";
@@ -185,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D6FE0EF28393D7C0007F99C /* LaunchScreen.storyboard in Resources */,
+				1D6FE106283A28640007F99C /* 피카부.mp3 in Resources */,
 				1D6FE0EC28393D7C0007F99C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -198,6 +205,7 @@
 			files = (
 				1D6FE0E728393D7A0007F99C /* MusicPlayerViewController.swift in Sources */,
 				1D6FE0E328393D7A0007F99C /* AppDelegate.swift in Sources */,
+				1D6FE104283A265E0007F99C /* MusicPlayer.swift in Sources */,
 				1D6FE0E528393D7A0007F99C /* SceneDelegate.swift in Sources */,
 				1D6FE0FA283956A80007F99C /* UIImage+Extensions.swift in Sources */,
 				1D6FE0FC283957F80007F99C /* MediaSeekBar.swift in Sources */,
@@ -414,20 +422,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1D6FE0F628393D8A0007F99C /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		CE0C4945283A4354007C05C5 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1D6FE0F728393D8A0007F99C /* SnapKit */ = {
+		CE0C4946283A4354007C05C5 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1D6FE0F628393D8A0007F99C /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = CE0C4945283A4354007C05C5 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
