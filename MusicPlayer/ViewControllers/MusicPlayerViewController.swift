@@ -173,15 +173,23 @@ class MusicPlayerViewController: UIViewController {
     
     // MARK: - Properties
     
-    let musicPlayer = MusicPlayer()
+    var musicPlayer: MusicPlayer?
 
+    // MARK: - Initializers
+    
+    convenience init(musicPlayer: MusicPlayer) {
+        self.init(nibName: nil, bundle: nil)
+        musicPlayer.delegate = self
+        self.musicPlayer = musicPlayer
+    }
+    
     // MARK: - Lifecycle Callbacks
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupActions()
-        setupModels()
+        selectMusic()
     }
 
     // MARK: - Setups
@@ -260,15 +268,17 @@ class MusicPlayerViewController: UIViewController {
         forwardButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(forwardButtonDidLongPressed)))
     }
     
-    private func setupModels() {
-        musicPlayer.delegate = self
+    private func selectMusic() {
+        let path = Bundle.main.path(forResource: "피카부", ofType:"mp3")
+        let url = URL(fileURLWithPath: path ?? "")
+        musicPlayer?.url = url
     }
     
     // MARK: - Actions
     
     @objc func mediaSeekBarValueChanged(_ sender: MediaSeekBar) {
         let progress = Double(mediaSeekBar.value)
-        musicPlayer.seek(to: progress)
+        musicPlayer?.seek(to: progress)
     }
     
     @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {
@@ -280,13 +290,16 @@ class MusicPlayerViewController: UIViewController {
     }
     
     @objc func playPauseButtonDidTap(_ sender: UIButton) {
-        print(#function)
-        musicPlayer.playSound()
+        musicPlayer?.playPauseButtonDidTap()
     }
 }
 
 extension MusicPlayerViewController: MusicPlayerDelegate {
-    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtworkImageData imageData: Data) {
+    func musicPlayer(_ musicPlayer: MusicPlayer, errorDidOccurred error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtwork imageData: Data) {
         artworkImageView.image = UIImage(data: imageData)
     }
     
@@ -296,5 +309,13 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
     
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtist artist: String) {
         artistLabel.text = artist
+    }
+    
+    func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool) {
+        if isPlaying {
+            playPauseButton.setImage(.pauseFill, for: .normal)
+        } else {
+            playPauseButton.setImage(.playFill, for: .normal)
+        }
     }
 }

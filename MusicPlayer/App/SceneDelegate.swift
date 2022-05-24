@@ -14,10 +14,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        
-        window.rootViewController = MusicPlayerViewController()
-        
         self.window = window
+        
+        let musicPlayer = MusicPlayer()
+        let musicPlayerViewController = MusicPlayerViewController(musicPlayer: musicPlayer)
+        
+        window.rootViewController = musicPlayerViewController
         window.makeKeyAndVisible()
     }
 }
