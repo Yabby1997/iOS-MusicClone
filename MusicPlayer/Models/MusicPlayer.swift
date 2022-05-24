@@ -14,7 +14,7 @@ protocol MusicPlayerDelegate: AnyObject {
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadTitle title: String)
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtist artist: String)
     func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool)
-    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadDuration duration: TimeInterval)
+    func musicPlayer(_ musicPlayer: MusicPlayer, didPlayed playedTime: CMTime, inTotal duration: CMTime)
 }
 
 class MusicPlayer {
@@ -25,11 +25,17 @@ class MusicPlayer {
         }
     }
     
-    private var player: AVAudioPlayer?
+    private var player: AVPlayer?
     weak var delegate: MusicPlayerDelegate?
     
-    private var isPlaying: Bool { player?.isPlaying ?? false }
-    private var duration: TimeInterval { player?.duration ?? 0 }
+    private var isPlaying: Bool {
+        guard let player = player else { return false }
+        return player.rate != 0
+    }
+    
+    private var duration: CMTime { player?.currentItem?.duration ?? .zero }
+    
+    private var playbackTimeObservation: Any? = nil
     
     private func loadMetadata() {
         guard let url = url else { return }
@@ -58,11 +64,15 @@ class MusicPlayer {
     
     private func loadPlayer() {
         guard let url = url else { return }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            delegate?.musicPlayer(self, didLoadDuration: duration)
-        } catch let error {
-            delegate?.musicPlayer(self, errorDidOccurred: error)
+        let item = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: item)
+        
+        let timeScale = CMTimeScale(NSEC_PER_SEC)
+        let time = CMTime(seconds: 0.5, preferredTimescale: timeScale)
+        
+        playbackTimeObservation = player?.addPeriodicTimeObserver(forInterval: time, queue: .main) { [weak self] time in
+            guard let self = self else { return }
+            self.delegate?.musicPlayer(self, didPlayed: time, inTotal: self.duration)
         }
     }
     
@@ -75,7 +85,8 @@ class MusicPlayer {
         delegate?.musicPlayer(self, didChangePlaybackStatus: isPlaying)
     }
     
-    func seek(to progress: Float) {
-        player?.currentTime = duration * Double(progress) / 100.0
+    func seekBarValueChanged(to progress: Float) {
+        let seekTime = CMTimeMultiplyByFloat64(duration, multiplier: Double(progress) / 100.0)
+        player?.seek(to: seekTime)
     }
 }

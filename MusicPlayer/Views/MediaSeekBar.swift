@@ -5,6 +5,7 @@
 //  Created by Seunghun Yang on 2022/05/22.
 //
 
+import AVKit
 import UIKit
 
 class MediaSeekBar: UIControl {
@@ -30,24 +31,22 @@ class MediaSeekBar: UIControl {
     private let playedTimeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.isUserInteractionEnabled = false
+        label.text = "--:--"
         return label
     }()
     
     private let remainingTimeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
-        label.isUserInteractionEnabled = false
+        label.text = "--:--"
         return label
     }()
     
     // MARK: - Properties
     
-    var duration: TimeInterval = 0 {
-        didSet { updateTimeLabels() }
-    }
-    
-    var progress: Float {
+    private var didEndEditing: Bool = false
+    private var duration: Double = .zero
+    private(set) var progress: Float {
         get { slider.value }
         set {
             slider.value = newValue
@@ -138,11 +137,18 @@ class MediaSeekBar: UIControl {
             return String(format: "%02d:%02d", minutes, seconds)
         }
         
-        let playedTime = duration / 100 * Double(progress)
-        let remainingTime = duration - playedTime
+        let seekingTime = duration * (Double(progress) / 100.0)
+        let remainingTime = duration - seekingTime
         
-        playedTimeLabel.text = getTimeString(with: playedTime)
+        playedTimeLabel.text = getTimeString(with: seekingTime)
         remainingTimeLabel.text = "-" + getTimeString(with: remainingTime)
+    }
+    
+    func updateProgress(playedTime: CMTime, duration: CMTime) {
+        if slider.isTracking { return }
+        if didEndEditing { return didEndEditing = false }
+        self.duration = duration.seconds
+        progress = Float(playedTime.seconds / duration.seconds * 100)
     }
     
     // MARK: - Actions
@@ -152,6 +158,7 @@ class MediaSeekBar: UIControl {
     }
     
     @objc private func sliderValueEditDidEnd(_ sender: UISlider) {
+        didEndEditing = true
         sendActions(for: .valueChanged)
     }
 }
