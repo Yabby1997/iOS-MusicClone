@@ -23,15 +23,13 @@ class MediaSeekBar: UIControl {
         let slider = UISlider()
         slider.minimumValue = 0
         slider.maximumValue = 100
-        slider.value = 50
-        slider.isContinuous = false
+        slider.value = 0
         return slider
     }()
     
     private let playedTimeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.text = "1:59"
         label.isUserInteractionEnabled = false
         return label
     }()
@@ -39,26 +37,22 @@ class MediaSeekBar: UIControl {
     private let remainingTimeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
-        label.text = "-1:54"
         label.isUserInteractionEnabled = false
         return label
     }()
     
     // MARK: - Properties
     
-    var maximumValue: Float {
-        get { slider.maximumValue }
-        set { slider.maximumValue = newValue }
+    var duration: TimeInterval = 0 {
+        didSet { updateTimeLabels() }
     }
     
-    var minimumValue: Float {
-        get { slider.minimumValue }
-        set { slider.minimumValue = newValue }
-    }
-    
-    var value: Float {
+    var progress: Float {
         get { slider.value }
-        set { slider.value = newValue }
+        set {
+            slider.value = newValue
+            updateTimeLabels()
+        }
     }
     
     var sliderTintColor: UIColor? { didSet { slider.tintColor = sliderTintColor } }
@@ -98,6 +92,7 @@ class MediaSeekBar: UIControl {
             make.leading.trailing.top.equalToSuperview()
         }
         slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
+        slider.addTarget(self, action: #selector(sliderValueEditDidEnd), for: [.touchUpInside, .touchUpOutside])
         
         addSubview(playedTimeLabel)
         playedTimeLabel.snp.makeConstraints { make in
@@ -136,9 +131,27 @@ class MediaSeekBar: UIControl {
         return renderer.image { thumbView.layer.render(in: $0.cgContext) }
     }
     
+    private func updateTimeLabels() {
+        func getTimeString(with time: Double) -> String {
+            let minutes = Int(time / 60.0)
+            let seconds = Int(time.truncatingRemainder(dividingBy: 60.0))
+            return String(format: "%02d:%02d", minutes, seconds)
+        }
+        
+        let playedTime = duration / 100 * Double(progress)
+        let remainingTime = duration - playedTime
+        
+        playedTimeLabel.text = getTimeString(with: playedTime)
+        remainingTimeLabel.text = "-" + getTimeString(with: remainingTime)
+    }
+    
     // MARK: - Actions
     
     @objc private func sliderValueChanged(_ sender: UISlider) {
+        updateTimeLabels()
+    }
+    
+    @objc private func sliderValueEditDidEnd(_ sender: UISlider) {
         sendActions(for: .valueChanged)
     }
 }

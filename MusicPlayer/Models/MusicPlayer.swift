@@ -14,6 +14,7 @@ protocol MusicPlayerDelegate: AnyObject {
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadTitle title: String)
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtist artist: String)
     func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool)
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadDuration duration: TimeInterval)
 }
 
 class MusicPlayer {
@@ -28,6 +29,7 @@ class MusicPlayer {
     weak var delegate: MusicPlayerDelegate?
     
     private var isPlaying: Bool { player?.isPlaying ?? false }
+    private var duration: TimeInterval { player?.duration ?? 0 }
     
     private func loadMetadata() {
         guard let url = url else { return }
@@ -58,6 +60,7 @@ class MusicPlayer {
         guard let url = url else { return }
         do {
             player = try AVAudioPlayer(contentsOf: url)
+            delegate?.musicPlayer(self, didLoadDuration: duration)
         } catch let error {
             delegate?.musicPlayer(self, errorDidOccurred: error)
         }
@@ -72,8 +75,7 @@ class MusicPlayer {
         delegate?.musicPlayer(self, didChangePlaybackStatus: isPlaying)
     }
     
-    func seek(to progress: Double) {
-        guard let duration = player?.duration else { return }
-        player?.currentTime = duration * progress / 100.0
+    func seek(to progress: Float) {
+        player?.currentTime = duration * Double(progress) / 100.0
     }
 }

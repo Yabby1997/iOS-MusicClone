@@ -277,8 +277,7 @@ class MusicPlayerViewController: UIViewController {
     // MARK: - Actions
     
     @objc func mediaSeekBarValueChanged(_ sender: MediaSeekBar) {
-        let progress = Double(mediaSeekBar.value)
-        musicPlayer?.seek(to: progress)
+        musicPlayer?.seek(to: mediaSeekBar.progress)
     }
     
     @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {
@@ -317,5 +316,9 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
         } else {
             playPauseButton.setImage(.playFill, for: .normal)
         }
+    }
+    
+    func musicPlayer(_ musicPlayer: MusicPlayer, didLoadDuration duration: TimeInterval) {
+        mediaSeekBar.duration = duration
     }
 }
