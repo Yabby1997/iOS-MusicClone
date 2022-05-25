@@ -8,6 +8,8 @@
 import AVFoundation
 import Foundation
 
+// MARK: - Delegate Protocol
+
 protocol MusicPlayerDelegate: AnyObject {
     func musicPlayer(_ musicPlayer: MusicPlayer, errorDidOccurred error: Error)
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtwork imageData: Data)
@@ -18,18 +20,14 @@ protocol MusicPlayerDelegate: AnyObject {
 }
 
 class MusicPlayer {
+    // MARK: - Properties
+    
     let musics: [URL]
-    private var currentMusicIndex: Int? {
-        didSet {
-            loadMetadata()
-            loadPlayer()
-        }
-    }
     
     private let player = AVPlayer()
-    private var playbackTimeObservation: Any? = nil
-    weak var delegate: MusicPlayerDelegate?
     
+    private var playbackTimeObservation: Any? = nil
+    private var currentMusicIndex: Int? { didSet { reload() }}
     private var duration: CMTime { player.currentItem?.duration ?? .zero }
     private var isPlaying: Bool { player.rate != 0 }
     private var url: URL? {
@@ -37,10 +35,16 @@ class MusicPlayer {
         return musics[safe: index]
     }
     
+    weak var delegate: MusicPlayerDelegate?
+    
+    // MARK: - Initializers
+    
     init(musics: [URL]) {
         self.musics = musics
         self.currentMusicIndex = musics.isEmpty ? nil : 0
     }
+    
+    // MARK: - Private Methods
     
     private func loadMetadata() {
         guard let url = url else { return }
@@ -66,11 +70,6 @@ class MusicPlayer {
             delegate?.musicPlayer(self, didLoadArtist: artist)
         }
     }
-
-    func reload() {
-        loadMetadata()
-        loadPlayer()
-    }
     
     private func loadPlayer() {
         guard let url = url else { return }
@@ -85,6 +84,13 @@ class MusicPlayer {
             guard let self = self else { return }
             self.delegate?.musicPlayer(self, didPlayed: time, inTotal: self.duration)
         }
+    }
+    
+    // MARK: - Public Methods
+    
+    func reload() {
+        loadMetadata()
+        loadPlayer()
     }
     
     func playPauseButtonDidTap() {

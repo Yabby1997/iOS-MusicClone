@@ -340,6 +340,8 @@ class MusicPlayerViewController: UIViewController {
     }
 }
 
+// MARK: - MusicPlayerDelegate Implementation
+
 extension MusicPlayerViewController: MusicPlayerDelegate {
     func musicPlayer(_ musicPlayer: MusicPlayer, errorDidOccurred error: Error) {
         print(error.localizedDescription)
