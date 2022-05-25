@@ -77,6 +77,18 @@ class MusicPlayerViewController: UIViewController {
     
     // MARK: - Subviews
     
+    private let backgroundView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
+    private let darkOverlayView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black.withAlphaComponent(0.3)
+        return view
+    }()
+    
     private let artworkContainerView: UIView = {
         let view = UIView()
         view.layer.shadowColor = UIColor.black.cgColor
@@ -88,7 +100,6 @@ class MusicPlayerViewController: UIViewController {
     
     private let artworkImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .black
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Design.ArtworkImageView.cornerRadius
         return imageView
@@ -209,7 +220,15 @@ class MusicPlayerViewController: UIViewController {
     // MARK: - Setups
     
     private func setupViews() {
-        view.backgroundColor = .systemGray
+        view.addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        backgroundView.addSubview(darkOverlayView)
+        darkOverlayView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         view.addSubview(artworkContainerView)
         artworkContainerView.snp.makeConstraints { make in
@@ -327,7 +346,15 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
     }
     
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadArtwork imageData: Data) {
-        artworkImageView.image = UIImage(data: imageData)
+        let artworkImage = UIImage(data: imageData)
+        
+        artworkImageView.image = artworkImage
+        UIView.transition(
+            with: backgroundView, duration: 1.0,
+            options: .transitionCrossDissolve
+        ) { [weak self] in
+            self?.backgroundView.image = artworkImage?.blur(radius: 100)
+        }
     }
     
     func musicPlayer(_ musicPlayer: MusicPlayer, didLoadTitle title: String) {
