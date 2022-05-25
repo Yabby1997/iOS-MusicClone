@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Static URLs
+
 extension URL {
     static let peek_a_boo = URL(fileURLWithPath: Bundle.main.path(forResource: "peek-a-boo", ofType:"mp3") ?? "")
     static let italo_disco = URL(fileURLWithPath: Bundle.main.path(forResource: "Italo Disco", ofType: "mp3") ?? "")

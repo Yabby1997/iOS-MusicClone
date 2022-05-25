@@ -133,7 +133,7 @@ class MusicPlayerViewController: UIViewController {
     
     private let rewindButton: UIButton = {
         let button = UIButton()
-        button.setImage(.backwardFill, for: .normal)
+        button.setImage(.Icon.backwardFill, for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.imageEdgeInsets = Design.MediaControl.buttonImageInset
@@ -143,7 +143,7 @@ class MusicPlayerViewController: UIViewController {
     
     private let playPauseButton: UIButton = {
         let button = UIButton()
-        button.setImage(.playFill, for: .normal)
+        button.setImage(.Icon.playFill, for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.tintColor = .white
@@ -152,7 +152,7 @@ class MusicPlayerViewController: UIViewController {
     
     private let forwardButton: UIButton = {
         let button = UIButton()
-        button.setImage(.forwardFill, for: .normal)
+        button.setImage(.Icon.forwardFill, for: .normal)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.imageEdgeInsets = Design.MediaControl.buttonImageInset
@@ -169,7 +169,7 @@ class MusicPlayerViewController: UIViewController {
     
     private let lowSoundImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .speakerFill
+        imageView.image = .Icon.speakerFill
         imageView.tintColor = Design.SoundControl.tintColor
         imageView.contentMode = .scaleAspectFit
         return imageView
@@ -177,7 +177,7 @@ class MusicPlayerViewController: UIViewController {
 
     private let highSoundImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = .speakerWave3Fill
+        imageView.image = .Icon.speakerWave3Fill
         imageView.tintColor = Design.SoundControl.tintColor
         imageView.contentMode = .scaleAspectFit
         return imageView
@@ -304,8 +304,6 @@ class MusicPlayerViewController: UIViewController {
         playPauseButton.addTarget(self, action: #selector(playPauseButtonDidTap), for: .touchUpInside)
         rewindButton.addTarget(self, action: #selector(rewindButtonDidTap), for: .touchUpInside)
         forwardButton.addTarget(self, action: #selector(forwardButtonDidTap), for: .touchUpInside)
-        rewindButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(rewindButtoDidLongPressed)))
-        forwardButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(forwardButtonDidLongPressed)))
     }
     
     private func setupPlayer() {
@@ -325,14 +323,6 @@ class MusicPlayerViewController: UIViewController {
     
     @objc func forwardButtonDidTap(_ sender: UIButton) {
         musicPlayer?.forwardButtonDidTap()
-    }
-    
-    @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {
-        print(#function)
-    }
-    
-    @objc func forwardButtonDidLongPressed(_ sender: UILongPressGestureRecognizer) {
-        print(#function)
     }
     
     @objc func playPauseButtonDidTap(_ sender: UIButton) {
@@ -369,14 +359,14 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
     
     func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool) {
         if isPlaying {
-            playPauseButton.setImage(.pauseFill, for: .normal)
+            playPauseButton.setImage(.Icon.pauseFill, for: .normal)
             artworkContainerView.snp.updateConstraints { make in
                 make.leading.equalToSuperview().offset(Design.ArtworkImageView.playingLeading)
                 make.trailing.equalToSuperview().offset(Design.ArtworkImageView.playingTrailing)
                 make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.playingBottom)
             }
         } else {
-            playPauseButton.setImage(.playFill, for: .normal)
+            playPauseButton.setImage(.Icon.playFill, for: .normal)
             artworkContainerView.snp.updateConstraints { make in
                 make.leading.equalToSuperview().offset(Design.ArtworkImageView.pauseLeading)
                 make.trailing.equalToSuperview().offset(Design.ArtworkImageView.pauseTrailing)
