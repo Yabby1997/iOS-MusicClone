@@ -16,9 +16,12 @@ class MusicPlayerViewController: UIViewController {
     
     enum Design {
         enum ArtworkImageView {
-            static let leading: CGFloat = 64
-            static let trailing: CGFloat = -64
-            static let bottom: CGFloat = -30
+            static let pauseLeading: CGFloat = 64
+            static let pauseTrailing: CGFloat = -64
+            static let pauseBottom: CGFloat = -30
+            static let playingLeading: CGFloat = 32
+            static let playingTrailing: CGFloat = -32
+            static let playingBottom: CGFloat = 2
             static let cornerRadius: CGFloat = 12
         }
         
@@ -198,9 +201,9 @@ class MusicPlayerViewController: UIViewController {
         
         view.addSubview(artworkImageView)
         artworkImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(Design.ArtworkImageView.leading)
-            make.trailing.equalToSuperview().offset(Design.ArtworkImageView.trailing)
-            make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.bottom)
+            make.leading.equalToSuperview().offset(Design.ArtworkImageView.pauseLeading)
+            make.trailing.equalToSuperview().offset(Design.ArtworkImageView.pauseTrailing)
+            make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.pauseBottom)
             make.height.equalTo(artworkImageView.snp.width)
         }
         
@@ -321,8 +324,28 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
     func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool) {
         if isPlaying {
             playPauseButton.setImage(.pauseFill, for: .normal)
+            artworkImageView.snp.updateConstraints { make in
+                make.leading.equalToSuperview().offset(Design.ArtworkImageView.playingLeading)
+                make.trailing.equalToSuperview().offset(Design.ArtworkImageView.playingTrailing)
+                make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.playingBottom)
+            }
         } else {
             playPauseButton.setImage(.playFill, for: .normal)
+            artworkImageView.snp.updateConstraints { make in
+                make.leading.equalToSuperview().offset(Design.ArtworkImageView.pauseLeading)
+                make.trailing.equalToSuperview().offset(Design.ArtworkImageView.pauseTrailing)
+                make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.pauseBottom)
+            }
+        }
+        
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.5,
+            initialSpringVelocity: 1.0,
+            options: .curveEaseIn
+        ) { [weak self] in
+            self?.view.layoutIfNeeded()
         }
     }
     
