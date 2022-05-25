@@ -82,7 +82,7 @@ class MusicPlayerViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Design.TitleLabel.font
-        label.text = "Italo Disco"
+        label.text = "Not Playing"
         label.textColor = Design.TitleLabel.fontColor
         return label
     }()
@@ -90,7 +90,7 @@ class MusicPlayerViewController: UIViewController {
     private let artistLabel: UILabel = {
         let label = UILabel()
         label.font = Design.ArtistLabel.font
-        label.text = "Last Dinosaurs"
+        label.text = " "
         label.textColor = Design.ArtistLabel.fontColor
         return label
     }()
@@ -179,7 +179,6 @@ class MusicPlayerViewController: UIViewController {
     
     convenience init(musicPlayer: MusicPlayer) {
         self.init(nibName: nil, bundle: nil)
-        musicPlayer.delegate = self
         self.musicPlayer = musicPlayer
     }
     
@@ -189,7 +188,7 @@ class MusicPlayerViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupActions()
-        selectMusic()
+        setupPlayer()
     }
 
     // MARK: - Setups
@@ -264,20 +263,29 @@ class MusicPlayerViewController: UIViewController {
     private func setupActions() {
         mediaSeekBar.addTarget(self, action: #selector(mediaSeekBarValueChanged), for: .valueChanged)
         playPauseButton.addTarget(self, action: #selector(playPauseButtonDidTap), for: .touchUpInside)
+        rewindButton.addTarget(self, action: #selector(rewindButtonDidTap), for: .touchUpInside)
+        forwardButton.addTarget(self, action: #selector(forwardButtonDidTap), for: .touchUpInside)
         rewindButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(rewindButtoDidLongPressed)))
         forwardButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(forwardButtonDidLongPressed)))
     }
     
-    private func selectMusic() {
-        let path = Bundle.main.path(forResource: "피카부", ofType:"mp3")
-        let url = URL(fileURLWithPath: path ?? "")
-        musicPlayer?.url = url
+    private func setupPlayer() {
+        musicPlayer?.delegate = self
+        musicPlayer?.reload()
     }
     
     // MARK: - Actions
     
     @objc func mediaSeekBarValueChanged(_ sender: MediaSeekBar) {
         musicPlayer?.seekBarValueChanged(to: mediaSeekBar.progress)
+    }
+    
+    @objc func rewindButtonDidTap(_ sender: UIButton) {
+        musicPlayer?.rewindButtonDidTap()
+    }
+    
+    @objc func forwardButtonDidTap(_ sender: UIButton) {
+        musicPlayer?.forwardButtonDidTap()
     }
     
     @objc func rewindButtoDidLongPressed(_ sender: UILongPressGestureRecognizer) {

@@ -16,7 +16,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         
-        let musicPlayer = MusicPlayer()
+        let musicPlayer = MusicPlayer(musics: [
+            .peek_a_boo,
+            .italo_disco,
+            .tkm
+        ])
+        
         let musicPlayerViewController = MusicPlayerViewController(musicPlayer: musicPlayer)
         
         window.rootViewController = musicPlayerViewController

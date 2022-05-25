@@ -132,6 +132,7 @@ class MediaSeekBar: UIControl {
     
     private func updateTimeLabels() {
         func getTimeString(with time: Double) -> String {
+            if time.isNaN || time.isInfinite { return "--:--" }
             let minutes = Int(time / 60.0)
             let seconds = Int(time.truncatingRemainder(dividingBy: 60.0))
             return String(format: "%02d:%02d", minutes, seconds)

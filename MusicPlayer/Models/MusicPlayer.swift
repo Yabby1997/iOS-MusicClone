@@ -18,24 +18,29 @@ protocol MusicPlayerDelegate: AnyObject {
 }
 
 class MusicPlayer {
-    var url: URL? {
+    let musics: [URL]
+    private var currentMusicIndex: Int? {
         didSet {
             loadMetadata()
             loadPlayer()
         }
     }
     
-    private var player: AVPlayer?
+    private let player = AVPlayer()
+    private var playbackTimeObservation: Any? = nil
     weak var delegate: MusicPlayerDelegate?
     
-    private var isPlaying: Bool {
-        guard let player = player else { return false }
-        return player.rate != 0
+    private var duration: CMTime { player.currentItem?.duration ?? .zero }
+    private var isPlaying: Bool { player.rate != 0 }
+    private var url: URL? {
+        guard let index = currentMusicIndex else { return nil }
+        return musics[safe: index]
     }
     
-    private var duration: CMTime { player?.currentItem?.duration ?? .zero }
-    
-    private var playbackTimeObservation: Any? = nil
+    init(musics: [URL]) {
+        self.musics = musics
+        self.currentMusicIndex = musics.isEmpty ? nil : 0
+    }
     
     private func loadMetadata() {
         guard let url = url else { return }
@@ -61,16 +66,22 @@ class MusicPlayer {
             delegate?.musicPlayer(self, didLoadArtist: artist)
         }
     }
+
+    func reload() {
+        loadMetadata()
+        loadPlayer()
+    }
     
     private func loadPlayer() {
         guard let url = url else { return }
         let item = AVPlayerItem(url: url)
-        player = AVPlayer(playerItem: item)
+        
+        player.replaceCurrentItem(with: item)
         
         let timeScale = CMTimeScale(NSEC_PER_SEC)
         let time = CMTime(seconds: 0.5, preferredTimescale: timeScale)
         
-        playbackTimeObservation = player?.addPeriodicTimeObserver(forInterval: time, queue: .main) { [weak self] time in
+        playbackTimeObservation = player.addPeriodicTimeObserver(forInterval: time, queue: .main) { [weak self] time in
             guard let self = self else { return }
             self.delegate?.musicPlayer(self, didPlayed: time, inTotal: self.duration)
         }
@@ -78,15 +89,27 @@ class MusicPlayer {
     
     func playPauseButtonDidTap() {
         if isPlaying {
-            player?.pause()
+            player.pause()
         } else {
-            player?.play()
+            player.play()
         }
         delegate?.musicPlayer(self, didChangePlaybackStatus: isPlaying)
     }
     
+    func rewindButtonDidTap() {
+        guard let index = currentMusicIndex,
+              index > 0 else { return }
+        currentMusicIndex = index - 1
+    }
+    
+    func forwardButtonDidTap() {
+        guard let index = currentMusicIndex,
+              index + 1 < musics.count else { return }
+        currentMusicIndex = index + 1
+    }
+    
     func seekBarValueChanged(to progress: Float) {
         let seekTime = CMTimeMultiplyByFloat64(duration, multiplier: Double(progress) / 100.0)
-        player?.seek(to: seekTime)
+        player.seek(to: seekTime)
     }
 }
