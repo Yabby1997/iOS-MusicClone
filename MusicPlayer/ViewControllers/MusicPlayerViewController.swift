@@ -22,7 +22,10 @@ class MusicPlayerViewController: UIViewController {
             static let playingLeading: CGFloat = 32
             static let playingTrailing: CGFloat = -32
             static let playingBottom: CGFloat = 2
+            static let playingShadowOpacity: Float = 0.6
+            static let pauseShadowOpacity: Float = 0.3
             static let cornerRadius: CGFloat = 12
+            static let shadowOffset = CGSize(width: 0, height: 5)
         }
         
         enum TitleLabel {
@@ -73,6 +76,15 @@ class MusicPlayerViewController: UIViewController {
     }
     
     // MARK: - Subviews
+    
+    private let artworkContainerView: UIView = {
+        let view = UIView()
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = Design.ArtworkImageView.pauseShadowOpacity
+        view.layer.shadowOffset = Design.ArtworkImageView.shadowOffset
+        view.layer.shadowRadius = Design.ArtworkImageView.cornerRadius
+        return view
+    }()
     
     private let artworkImageView: UIImageView = {
         let imageView = UIImageView()
@@ -199,12 +211,17 @@ class MusicPlayerViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .systemGray
         
-        view.addSubview(artworkImageView)
-        artworkImageView.snp.makeConstraints { make in
+        view.addSubview(artworkContainerView)
+        artworkContainerView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(Design.ArtworkImageView.pauseLeading)
             make.trailing.equalToSuperview().offset(Design.ArtworkImageView.pauseTrailing)
             make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.pauseBottom)
-            make.height.equalTo(artworkImageView.snp.width)
+            make.height.equalTo(artworkContainerView.snp.width)
+        }
+        
+        artworkContainerView.addSubview(artworkImageView)
+        artworkImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         view.addSubview(titleLabel)
@@ -324,14 +341,14 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
     func musicPlayer(_ musicPlayer: MusicPlayer, didChangePlaybackStatus isPlaying: Bool) {
         if isPlaying {
             playPauseButton.setImage(.pauseFill, for: .normal)
-            artworkImageView.snp.updateConstraints { make in
+            artworkContainerView.snp.updateConstraints { make in
                 make.leading.equalToSuperview().offset(Design.ArtworkImageView.playingLeading)
                 make.trailing.equalToSuperview().offset(Design.ArtworkImageView.playingTrailing)
                 make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.playingBottom)
             }
         } else {
             playPauseButton.setImage(.playFill, for: .normal)
-            artworkImageView.snp.updateConstraints { make in
+            artworkContainerView.snp.updateConstraints { make in
                 make.leading.equalToSuperview().offset(Design.ArtworkImageView.pauseLeading)
                 make.trailing.equalToSuperview().offset(Design.ArtworkImageView.pauseTrailing)
                 make.bottom.equalTo(view.snp.centerY).offset(Design.ArtworkImageView.pauseBottom)
@@ -339,13 +356,16 @@ extension MusicPlayerViewController: MusicPlayerDelegate {
         }
         
         UIView.animate(
-            withDuration: 0.5,
+            withDuration: 1.0,
             delay: 0,
             usingSpringWithDamping: 0.5,
             initialSpringVelocity: 1.0,
             options: .curveEaseIn
         ) { [weak self] in
             self?.view.layoutIfNeeded()
+            self?.artworkContainerView.layer.shadowOpacity = isPlaying
+                ? Design.ArtworkImageView.playingShadowOpacity
+                : Design.ArtworkImageView.pauseShadowOpacity
         }
     }
     
